@@ -1,0 +1,5 @@
+﻿{
+  "Description": "Überprüfungsdatei für Domänen-Eigentümerschaft für Microsoft 365-Position im Website-Root",
+  "Domain": "agntec.com",
+  "Id": "d7d7562c-2732-4ff7-a93b-02371c76934f"
+}

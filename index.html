@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>agntec - Agentic AI for Engineering, Quality & Manufacturing</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Arial', sans-serif;
+      line-height: 1.6;
+      color: #333;
+      background: linear-gradient(135deg, #acb6e2 0%, #9bdee7 100%);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .intro-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background: linear-gradient(135deg, #acb6e2 0%, #9bdee7 100%);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      transition: opacity 1s ease-out, transform 1s ease-out;
+    }
+
+    .intro-screen.hidden {
+      opacity: 0;
+      transform: translateY(-100%);
+      pointer-events: none;
+    }
+
+    .intro-logo {
+      width: 500px;
+      height: auto;
+      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+      animation: fadeInScale 0.3s ease-out;
+      margin-bottom: 3rem;
+    }
+
+    .intro-text {
+      text-align: center;
+      color: white;
+    }
+
+    .intro-line {
+      opacity: 0;
+      transform: translateY(30px);
+      animation: slideInFade 1s ease-out forwards;
+      text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.1em;
+      margin-top: 1.2rem;
+      font-size: 3rem;
+      font-weight: 300;
+    }
+
+    .intro-line-1 {
+      animation-delay: 0.8s;
+    }
+
+    .intro-line-2 {
+      animation-delay: 1.6s;
+    }
+
+    .main-content {
+      opacity: 0;
+      transition: opacity 1s ease-in;
+    }
+
+    .main-content.visible {
+      opacity: 1;
+    }
+
+    .particles {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .particle {
+      position: absolute;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      animation: float 6s ease-in-out infinite;
+    }
+
+    .particle:nth-child(1) {
+      width: 20px;
+      height: 20px;
+      top: 20%;
+      left: 10%;
+      animation-delay: 0s;
+    }
+
+    .particle:nth-child(2) {
+      width: 15px;
+      height: 15px;
+      top: 60%;
+      left: 80%;
+      animation-delay: 2s;
+    }
+
+    .particle:nth-child(3) {
+      width: 25px;
+      height: 25px;
+      top: 80%;
+      left: 20%;
+      animation-delay: 4s;
+    }
+
+    .particle:nth-child(4) {
+      width: 12px;
+      height: 12px;
+      top: 30%;
+      left: 70%;
+      animation-delay: 1s;
+    }
+
+    .particle:nth-child(5) {
+      width: 18px;
+      height: 18px;
+      top: 70%;
+      left: 60%;
+      animation-delay: 3s;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 10;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 0 40px;
+    }
+
+    .logo {
+      width: 400px;
+      height: auto;
+      filter: drop-shadow(0 10px 30px rgba(0, 0, 0, 0.3));
+    }
+
+    .hero {
+      text-align: center;
+      padding: 40px 0 60px;
+      color: white;
+    }
+
+    .hero h1 {
+      font-size: 3rem;
+      font-weight: 300;
+      margin-bottom: 20px;
+      text-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.05em;
+    }
+
+    .hero .subtitle {
+      font-size: 1.5rem;
+      font-weight: 300;
+      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+      letter-spacing: 0.02em;
+      max-width: 900px;
+      margin: 0 auto;
+    }
+
+    .content-section {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      border-radius: 20px;
+      margin: 40px 0;
+      padding: 60px 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+    }
+
+    .section-title {
+      font-size: 2.5rem;
+      color: #2c5282;
+      margin-bottom: 30px;
+      font-weight: 300;
+      text-align: center;
+      letter-spacing: 0.02em;
+    }
+
+    .section-text {
+      font-size: 1.1rem;
+      line-height: 1.8;
+      margin-bottom: 25px;
+      color: #4a5568;
+    }
+
+    .highlight-box {
+      background: linear-gradient(135deg, rgba(172, 182, 226, 0.2) 0%, rgba(155, 222, 231, 0.2) 100%);
+      padding: 40px;
+      border-radius: 15px;
+      border: 1px solid rgba(172, 182, 226, 0.3);
+      margin: 40px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .highlight-box::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(135deg, #acb6e2 0%, #9bdee7 100%);
+    }
+
+    .highlight-box p {
+      margin-bottom: 0;
+      font-size: 1.2rem;
+      color: #2c5282;
+      font-weight: 400;
+      line-height: 1.7;
+    }
+
+    .services-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+      gap: 30px;
+      margin: 40px 0;
+    }
+
+    .service-card {
+      background: rgba(255, 255, 255, 0.9);
+      padding: 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+      border: 1px solid rgba(172, 182, 226, 0.2);
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .service-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(135deg, #acb6e2 0%, #9bdee7 100%);
+      transform: scaleX(0);
+      transition: transform 0.3s ease;
+    }
+
+    .service-card:hover::before {
+      transform: scaleX(1);
+    }
+
+    .service-card:hover {
+      transform: translateY(-8px);
+      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
+    }
+
+    .service-card h3 {
+      color: #2c5282;
+      font-size: 1.3rem;
+      margin-bottom: 15px;
+      font-weight: 400;
+    }
+
+    .service-card p {
+      font-size: 1rem;
+      line-height: 1.6;
+      color: #4a5568;
+    }
+
+    .cta-section {
+      text-align: center;
+      padding: 60px 0;
+      color: white;
+    }
+
+    .cta-section h2 {
+      color: white;
+      font-size: 2.5rem;
+      margin-bottom: 20px;
+      text-shadow: 0 3px 10px rgba(0, 0, 0, 0.3);
+      font-weight: 300;
+    }
+
+    .cta-section p {
+      font-size: 1.3rem;
+      margin-bottom: 30px;
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+    }
+
+    .btn {
+      display: inline-block;
+      background: rgba(255, 255, 255, 0.95);
+      color: #2c5282;
+      padding: 18px 40px;
+      text-decoration: none;
+      border-radius: 50px;
+      font-weight: 600;
+      font-size: 1.1rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255, 255, 255, 0.3);
+    }
+
+    .btn:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+      background: rgba(255, 255, 255, 1);
+    }
+
+    footer {
+      background: rgba(44, 82, 130, 0.9);
+      color: white;
+      text-align: center;
+      padding: 40px 0;
+      backdrop-filter: blur(10px);
+    }
+
+    footer p {
+      opacity: 0.9;
+      text-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+    }
+
+    @keyframes fadeInScale {
+      0% {
+        opacity: 0;
+        transform: scale(0.8);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1);
+      }
+    }
+
+    @keyframes slideInFade {
+      0% {
+        opacity: 0;
+        transform: translateY(30px);
+      }
+      100% {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    @keyframes float {
+      0%, 100% {
+        transform: translateY(0px) rotate(0deg);
+        opacity: 0.3;
+      }
+      50% {
+        transform: translateY(-20px) rotate(180deg);
+        opacity: 0.8;
+      }
+    }
+
+    @keyframes sparkle {
+      0% {
+        opacity: 1;
+        transform: scale(0);
+      }
+      50% {
+        opacity: 1;
+        transform: scale(1);
+      }
+      100% {
+        opacity: 0;
+        transform: scale(0);
+      }
+    }
+
+    @media (max-width: 768px) {
+      .intro-logo {
+        width: 400px;
+      }
+
+      .intro-line {
+        font-size: 2.2rem;
+      }
+
+      .logo {
+        width: 320px;
+      }
+
+      .hero h1 {
+        font-size: 2.2rem;
+      }
+
+      .hero .subtitle {
+        font-size: 1.2rem;
+      }
+
+      .section-title {
+        font-size: 2rem;
+      }
+
+      .content-section {
+        padding: 40px 25px;
+        margin: 20px 0;
+      }
+
+      .services-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .intro-logo {
+        width: 320px;
+      }
+
+      .intro-line {
+        font-size: 1.8rem;
+      }
+
+      .logo {
+        width: 280px;
+      }
+
+      .hero h1 {
+        font-size: 1.8rem;
+      }
+
+      .hero .subtitle {
+        font-size: 1rem;
+      }
+
+      .content-section {
+        padding: 30px 20px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="intro-screen" id="introScreen">
+    <img class="intro-logo" src="agntec_logo.png" alt="agntec logo">
+    <div class="intro-text">
+      <div class="intro-line intro-line-1">AI is not the future</div>
+      <div class="intro-line intro-line-2">It's the present</div>
+    </div>
+  </div>
+
+  <div class="main-content" id="mainContent">
+    <div class="particles">
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+      <div class="particle"></div>
+    </div>
+
+    <header>
+      <div class="container">
+        <img class="logo" src="agntec_logo.png" alt="agntec Logo">
+      </div>
+    </header>
+
+    <section class="hero">
+      <div class="container">
+        <h1>Agentic AI for Engineering & Quality Processes</h1>
+        <p class="subtitle">We co-develop autonomous AI agents with engineering teams, manufacturers, and domain experts to transform how products are developed and quality is assured.</p>
+      </div>
+    </section>
+
+    <main>
+      <div class="container">
+        <div class="highlight-box">
+          <p>Imagine autonomous AI agents orchestrating engineering changes and quality procedures—freeing engineers from coordination overhead to focus on innovation. We're building the next generation of intelligent automation for the engineering domain.</p>
+        </div>
+
+        <section class="content-section">
+          <p class="section-text">With deep expertise in engineering systems and AI implementation, we specialize in developing agentic AI solutions that understand the complexity of your domain. Our autonomous agents don't just automate tasks—they reason, adapt, and collaborate to solve real engineering and manufacturing challenges.</p>
+          
+          <p class="section-text">We work alongside startups, development teams, and domain experts to rapidly prototype and deploy high-impact AI agent systems that deliver measurable results. From concept to production, we ensure your agentic AI solutions integrate seamlessly into existing workflows and drive real operational value.</p>
+        </section>
+
+        <section class="content-section">
+          <h2 class="section-title">Our Focus Areas</h2>
+          <div class="services-grid">
+            <div class="service-card">
+              <h3>Agentic Engineering Change</h3>
+              <p>AI agents that autonomously coordinate ECO/ECN processes, manage approvals, and ensure compliance across complex engineering workflows.</p>
+            </div>
+            <div class="service-card">
+              <h3>Quality Intelligence</h3>
+              <p>Autonomous quality monitoring systems that detect anomalies, predict failures, and orchestrate corrective actions in real-time.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-section">
+          <h2 class="section-title">PLM Consulting Services</h2>
+          <p class="section-text">Beyond agentic AI development, we offer traditional PLM consulting services including strategy development, implementation planning, project health checks, and recovery services. With decades of experience in complex enterprise environments, we bring proven methodologies to ensure your PLM initiatives succeed.</p>
+          
+          <div class="services-grid">
+            <div class="service-card">
+              <h3>PLM Strategy & Roadmap</h3>
+              <p>Comprehensive planning and execution guidance for enterprise PLM transformations.</p>
+            </div>
+            <div class="service-card">
+              <h3>Project Planning & Setup</h3>
+              <p>Expert architecture and launch support for complex PLM initiatives.</p>
+            </div>
+            <div class="service-card">
+              <h3>Project Health Check & Recovery</h3>
+              <p>Assessment and intervention services for at-risk PLM implementations.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="content-section">
+          <h2 class="section-title">Why Work With agntec?</h2>
+          <p class="section-text">Building effective agentic AI for engineering domains requires more than technical expertise—it demands deep understanding of engineering workflows, quality systems, and manufacturing operations. We combine cutting-edge AI capabilities with decades of domain experience to deliver solutions that actually work in the real world.</p>
+          
+          <p class="section-text">We're not building generic chatbots or simple automation. We're developing autonomous agents that understand your domain, make intelligent decisions, and deliver measurable impact. From initial concept through deployment and beyond, we're your trusted partner in bringing agentic AI to your engineering organization.</p>
+        </section>
+      </div>
+    </main>
+
+    <section class="cta-section">
+      <div class="container">
+        <h2>Ready to Explore Agentic AI?</h2>
+        <p>Let's discuss how autonomous agents can transform your engineering operations.</p>
+        <a href="mailto:info@agntec.com" class="btn">Get In Touch</a>
+      </div>
+    </section>
+
+    <footer>
+      <div class="container">
+        <p>&copy; 2025 agntec. All rights reserved.</p>
+        <p style="margin-top: 15px;">
+          <a href="#impressum" style="color: white; text-decoration: none; opacity: 0.9; transition: opacity 0.3s ease;" onmouseover="this.style.opacity='1'" onmouseout="this.style.opacity='0.9'">Impressum</a>
+        </p>
+      </div>
+    </footer>
+
+    <div id="impressum-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100vh; background: rgba(0, 0, 0, 0.8); z-index: 20000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
+      <div style="background: white; padding: 50px; border-radius: 20px; max-width: 800px; max-height: 80vh; overflow-y: auto; box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3); position: relative;">
+        <button onclick="closeImpressum()" style="position: absolute; top: 20px; right: 20px; background: none; border: none; font-size: 2rem; color: #2c5282; cursor: pointer; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; border-radius: 50%; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(172, 182, 226, 0.2)'" onmouseout="this.style.background='none'">&times;</button>
+        
+        <h2 style="color: #2c5282; font-size: 2.5rem; margin-bottom: 30px; font-weight: 300;">Impressum</h2>
+        
+        <div style="color: #4a5568; line-height: 1.8;">
+          
+          <p style="margin-bottom: 10px;">agntec UG (haftungsbeschränkt)<br>
+          Goltsteinstr. 97<br>
+          50968 Köln<br>
+          Deutschland</p>
+          
+          <h3 style="color: #2c5282; font-size: 1.3rem; margin-top: 25px; margin-bottom: 15px; font-weight: 400;">Kontakt</h3>
+          <p style="margin-bottom: 10px;">
+          E-Mail: <a href="mailto:info@agntec.com" style="color: #2c5282; text-decoration: none; border-bottom: 1px solid #2c5282;">info@agntec.com</a><br>
+          </p>
+          
+          <h3 style="color: #2c5282; font-size: 1.3rem; margin-top: 25px; margin-bottom: 15px; font-weight: 400;">Vertreten durch</h3>
+          <p style="margin-bottom: 10px;">Frank Roderigo</p>
+          
+          <h3 style="color: #2c5282; font-size: 1.3rem; margin-top: 25px; margin-bottom: 15px; font-weight: 400;">Umsatzsteuer-ID</h3>
+          <p style="margin-bottom: 10px;">Umsatzsteuer-Identifikationsnummer gemäß § 27 a Umsatzsteuergesetz:<br>
+          DE455407798</p>
+          
+          <h3 style="color: #2c5282; font-size: 1.3rem; margin-top: 25px; margin-bottom: 15px; font-weight: 400;">Haftungsausschluss</h3>
+          
+          <h4 style="color: #2c5282; font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px; font-weight: 400;">Haftung für Inhalte</h4>
+          <p style="margin-bottom: 15px;">Die Inhalte unserer Seiten wurden mit größter Sorgfalt erstellt. Für die Richtigkeit, Vollständigkeit und Aktualität der Inhalte können wir jedoch keine Gewähr übernehmen. Als Diensteanbieter sind wir gemäß § 7 Abs.1 TMG für eigene Inhalte auf diesen Seiten nach den allgemeinen Gesetzen verantwortlich.</p>
+          
+          <h4 style="color: #2c5282; font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px; font-weight: 400;">Haftung für Links</h4>
+          <p style="margin-bottom: 15px;">Unser Angebot enthält Links zu externen Webseiten Dritter, auf deren Inhalte wir keinen Einfluss haben. Deshalb können wir für diese fremden Inhalte auch keine Gewähr übernehmen. Für die Inhalte der verlinkten Seiten ist stets der jeweilige Anbieter oder Betreiber der Seiten verantwortlich.</p>
+          
+          <h4 style="color: #2c5282; font-size: 1.1rem; margin-top: 20px; margin-bottom: 10px; font-weight: 400;">Urheberrecht</h4>
+          <p style="margin-bottom: 15px;">Die durch die Seitenbetreiber erstellten Inhalte und Werke auf diesen Seiten unterliegen dem deutschen Urheberrecht. Die Vervielfältigung, Bearbeitung, Verbreitung und jede Art der Verwertung außerhalb der Grenzen des Urheberrechtes bedürfen der schriftlichen Zustimmung des jeweiligen Autors bzw. Erstellers.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    setTimeout(() => {
+      document.getElementById('introScreen').classList.add('hidden');
+      document.getElementById('mainContent').classList.add('visible');
+    }, 2700);
+
+    document.addEventListener('mousemove', function(e) {
+      if (Math.random() > 0.9) {
+        createSparkle(e.clientX, e.clientY);
+      }
+    });
+
+    function createSparkle(x, y) {
+      const sparkle = document.createElement('div');
+      sparkle.style.position = 'fixed';
+      sparkle.style.left = x + 'px';
+      sparkle.style.top = y + 'px';
+      sparkle.style.width = '4px';
+      sparkle.style.height = '4px';
+      sparkle.style.background = 'white';
+      sparkle.style.borderRadius = '50%';
+      sparkle.style.pointerEvents = 'none';
+      sparkle.style.zIndex = '1000';
+      sparkle.style.animation = 'sparkle 0.6s ease-out forwards';
+
+      document.body.appendChild(sparkle);
+
+      setTimeout(() => {
+        if (document.body.contains(sparkle)) {
+          document.body.removeChild(sparkle);
+        }
+      }, 600);
+    }
+
+    function openImpressum() {
+      document.getElementById('impressum-modal').style.display = 'flex';
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeImpressum() {
+      document.getElementById('impressum-modal').style.display = 'none';
+      document.body.style.overflow = 'auto';
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+      const impressumLink = document.querySelector('a[href="#impressum"]');
+      if (impressumLink) {
+        impressumLink.addEventListener('click', function(e) {
+          e.preventDefault();
+          openImpressum();
+        });
+      }
+
+      document.getElementById('impressum-modal').addEventListener('click', function(e) {
+        if (e.target === this) {
+          closeImpressum();
+        }
+      });
+
+      document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+          closeImpressum();
+        }
+      });
+    });
+  </script>
+</body>
+</html>
