@@ -423,6 +423,28 @@
       }
     }
 
+    nav {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(10px);
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      padding: 15px 0;
+      position: relative;
+      z-index: 100;
+    }
+
+    nav a {
+      text-decoration: none;
+      color: #2c5282;
+      font-weight: 600;
+      transition: color 0.3s ease;
+    }
+
+    nav a:hover {
+      color: #9bdee7;
+    }
+
     @media (max-width: 480px) {
       .intro-logo {
         width: 320px;
@@ -467,6 +489,14 @@
       <div class="particle"></div>
       <div class="particle"></div>
     </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="agentic.html">Agentic PLM</a>
+      <a href="resume.html">About</a>
+      <a href="what_is_an_ai_agent.html">What is an AI Agent?</a>
+      <a href="mailto:info@agntec.com">Contact</a>
+    </nav>
 
     <header>
       <div class="container">
